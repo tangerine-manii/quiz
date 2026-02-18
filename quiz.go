@@ -43,7 +43,6 @@ var (
 
 func loadImages(dir string) ([]string, error) {
 
-	var cnt int
 	validExt := map[string]bool{
 		".jpg": true, ".jpeg": true, ".png": true, ".gif": true, ".webp": true,
 	}
@@ -55,25 +54,27 @@ func loadImages(dir string) ([]string, error) {
 	}
 
 	for _, e := range entries {
-		if cnt == 30 {
-			break
-		}
-
 		if e.IsDir() {
 			continue
 		}
 		ext := strings.ToLower(filepath.Ext(e.Name()))
 		if validExt[ext] {
 			images = append(images, e.Name())
-			cnt++
 		}
 	}
 
-	// 랜덤 셔플
-	rand.New(rand.NewSource(time.Now().UnixNano()))
-	rand.Shuffle(len(images), func(i, j int) {
+	// 랜덤 생성기
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	// 전체 셔플
+	r.Shuffle(len(images), func(i, j int) {
 		images[i], images[j] = images[j], images[i]
 	})
+
+	// 30개만 자르기
+	if len(images) > 30 {
+		images = images[:30]
+	}
 
 	return images, nil
 }
