@@ -496,8 +496,13 @@ func main() {
 	// images 폴더 정적 서빙
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("images"))))
 
-	fmt.Println("🚀 서버 시작: http://localhost:8080")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // 로컬 실행시 기본값
+	}
+
+	fmt.Println("🚀 서버 시작: http://localhost:" + port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		fmt.Println("서버 오류:", err)
 	}
 }
